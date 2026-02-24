@@ -2,53 +2,50 @@
 session_start();
 include_once("config.php");
 
-if (!isset($_GET['id'])) header("Location: home.php");
+if (!isset($_SESSION['usuario_id'])) { header("Location: index.php"); exit(); }
 
-$playlist_id = (int)$_GET['id'];
-$uid = $_SESSION['usuario_id'];
+$pid = $_GET['id'];
+$sql_p = "SELECT nombre FROM playlists WHERE playlist_id = '$pid'";
+$res_p = mysqli_query($mysqli, $sql_p);
+$p_info = mysqli_fetch_assoc($res_p);
 
-// 1. Obtener info de la playlist (y verificar que sea del usuario)
-$sql_info = "SELECT * FROM playlists WHERE playlist_id = '$playlist_id' AND usuario_id = '$uid'";
-$res_info = mysqli_query($mysqli, $sql_info);
-$playlist = mysqli_fetch_assoc($res_info);
-
-if (!$playlist) die("Playlist no encontrada o acceso denegado.");
-
-// 2. Obtener las canciones de esa playlist haciendo JOIN
-$sql_canciones = "SELECT c.* FROM canciones c 
-                  JOIN playlist_canciones pc ON c.cancion_id = pc.cancion_id 
-                  WHERE pc.playlist_id = '$playlist_id'";
-$canciones = mysqli_query($mysqli, $sql_canciones);
+$sql_c = "SELECT c.* FROM canciones c 
+          JOIN playlist_canciones pc ON c.cancion_id = pc.cancion_id 
+          WHERE pc.playlist_id = '$pid'";
+$result_c = mysqli_query($mysqli, $sql_c);
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Contenido Playlist</title>
+    <title><?php echo $p_info['nombre']; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-dark text-white">
-    <div class="container mt-5">
-        <h1>📀 Playlist: <?php echo $playlist['nombre']; ?></h1>
-        <a href="home.php" class="btn btn-outline-light mb-4">&larr; Volver</a>
+    <div class="container mt-4">
+        <h1>Playlist: <?php echo $p_info['nombre']; ?></h1>
+        <a href="home.php" class="btn btn-secondary mb-3">Volver</a>
 
-        <table class="table table-dark table-striped">
+        <table class="table table-dark">
             <thead>
                 <tr>
                     <th>Título</th>
                     <th>Álbum</th>
-                    <th>Duración</th>
-                    <th>Año</th>
+                    <th>Escuchar</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while($row = mysqli_fetch_assoc($canciones)): ?>
+                <?php while($c = mysqli_fetch_assoc($result_c)): ?>
                 <tr>
-                    <td><?php echo $row['titulo']; ?></td>
-                    <td><?php echo $row['album']; ?></td>
-                    <td><?php echo $row['duracion']; ?></td>
-                    <td><?php echo $row['anio']; ?></td>
+                    <td><?php echo $c['titulo']; ?></td>
+                    <td><?php echo $c['album']; ?></td>
+                    <td>
+                        <?php if(!empty($c['soundcloud_url'])): ?>
+                            <a href="<?php echo $c['soundcloud_url']; ?>" target="_blank" class="btn btn-sm btn-warning">SoundCloud</a>
+                        <?php else: ?>
+                            -
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>

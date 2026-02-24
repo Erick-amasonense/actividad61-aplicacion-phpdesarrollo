@@ -2,7 +2,6 @@
 session_start();
 include_once("config.php");
 
-// Seguridad: Si no hay login, fuera
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.php");
     exit();
@@ -11,7 +10,6 @@ if (!isset($_SESSION['usuario_id'])) {
 $uid = $_SESSION['usuario_id'];
 $nombre = $_SESSION['nombre_usuario'];
 
-// Consultar SOLO las playlists de este usuario
 $sql = "SELECT * FROM playlists WHERE usuario_id = '$uid' ORDER BY fecha_creacion DESC";
 $result = mysqli_query($mysqli, $sql);
 ?>
@@ -55,7 +53,8 @@ $result = mysqli_query($mysqli, $sql);
                         <td><?php echo date("d/m/Y", strtotime($row['fecha_creacion'])); ?></td>
                         <td>
                             <a href="ver_playlist.php?id=<?php echo $row['playlist_id']; ?>" class="btn btn-sm btn-info">Ver Canciones</a>
-                            <a href="borrar_playlist.php?id=<?php echo $row['playlist_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que quieres borrar esta lista?')">Eliminar</a>
+                            <a href="editar_playlist.php?id=<?php echo $row['playlist_id']; ?>" class="btn btn-sm btn-warning text-dark">Editar</a>
+                            <a href="borrar_playlist.php?id=<?php echo $row['playlist_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro?')">Eliminar</a>
                         </td>
                     </tr>
                     <?php endwhile; ?>
