@@ -14,7 +14,7 @@ if (isset($_SESSION['usuario_id'])) {
 </head>
 <body class="bg-dark text-white text-center d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div>
-        <h1 class="display-1">DAFT PUNK PLAYLISTS</h1>
+        <h1 class="display-1">DAFT PUNK PLAYLISTS WEB</h1>
         <p class="lead">Crea tus propias listas con lo mejor de la música electrónica.</p>
         <div class="mt-4">
             <a href="login.php" class="btn btn-primary btn-lg mx-2">Iniciar Sesión</a>
