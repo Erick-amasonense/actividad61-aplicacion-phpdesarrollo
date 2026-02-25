@@ -37,6 +37,6 @@ jobs:
           script: |
             cd ~/actividad61-aplicacion-php-produccion-
             git pull origin main
-            sudo docker compose down
+            sudo docker compose down -v
             sudo docker compose pull
             sudo docker compose up -d
