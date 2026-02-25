@@ -36,5 +36,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/actividad61-aplicacion-php-produccion-
+            git pull origin main
             sudo docker compose pull
             sudo docker compose up -d
